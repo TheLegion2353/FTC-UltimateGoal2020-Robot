@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Robot;
 import java.util.ArrayList;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,6 +12,7 @@ public class HardwareController {
 	private ArrayList<Servo> servos = null;
 	private ArrayList<CRServo> crservos = null;
 	private DcMotor.Direction direction = DcMotor.Direction.FORWARD;
+	private AnalogInput potentiometer = null;
 
 	public HardwareController() {
 		motors = new ArrayList<DcMotor>();
@@ -35,6 +37,10 @@ public class HardwareController {
 		motors.add(motor);
 	}
 
+	public void addAnalogInput(AnalogInput device) {
+		potentiometer = device;
+	}
+
 	public void setSpeed(double s) {
 		for (DcMotor m : motors) {
 			m.setPower(s);
@@ -51,13 +57,26 @@ public class HardwareController {
 		}
 	}
 
+	public void resetEncoders(DcMotor.RunMode mode) {
+		for (DcMotor m : motors) {
+			m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+			m.setMode(mode);
+		}
+	}
+
 	public double getPos() {
 		double avrgPos = 0;
-		for (DcMotor m : motors) {
-			avrgPos += m.getCurrentPosition();
+		if (motors.size() > 0) {
+			for (DcMotor m : motors) {
+				avrgPos += m.getCurrentPosition();
+			}
 		}
 		avrgPos /= (double)motors.size();
 		return avrgPos;
+	}
+
+	public double getVoltage() {
+		return potentiometer.getVoltage();
 	}
 	public void addMotor(DcMotor motor) {
 		motors.add(motor);
