@@ -57,8 +57,7 @@ public class MainTeleOp extends OpMode {
 		arm.update();
 		wobbleClaw.update();
 
-		telemetry.addData("Arm Position (Voltage)", arm.getArmPosition());
-
+		telemetry.addData("Position: ", hardwareMap.get(DcMotorEx.class, "flywheel").getCurrentPosition());
 		intake.setSpeed(gamepad1.right_trigger - gamepad1.left_trigger);
 
 		Pose2d poseEstimate = drive.getPoseEstimate();

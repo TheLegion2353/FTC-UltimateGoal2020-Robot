@@ -27,6 +27,7 @@ public class Flywheel extends RobotPart {
 	@Override
 	public void driverUpdate() {
 		double velocity = (double)(flywheel.getPos() - lastPosition) / ((double)(System.currentTimeMillis() - lastTime) / 1000);
+		telemetry.addData("FLywheel position:", flywheel.getPos());
 		velocity /= 28;
 		lastPosition = flywheel.getPos();
 		lastTime = System.currentTimeMillis();
@@ -40,7 +41,7 @@ public class Flywheel extends RobotPart {
 			averageVoltage = 0;
 		}
 		if (gamepad.y) {
-			pid.setSetPoint(65);
+			pid.setSetPoint(20);
 			flywheel.setSpeed(averageVoltage);
 		} else if (gamepad.b) {
 			pid.setSetPoint(60);

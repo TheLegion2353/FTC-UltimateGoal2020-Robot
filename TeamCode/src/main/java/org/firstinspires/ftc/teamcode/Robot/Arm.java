@@ -8,16 +8,16 @@ import org.firstinspires.ftc.teamcode.Robot.PID;
 import org.firstinspires.ftc.teamcode.Robot.HardwareController;
 
 public class Arm extends RobotPart {
-	public double armP = 0.0;
-	public double armI = 0.000;
-	public double armD = 0.000;
+	public double armP = 1;
+	public double armI = 0.01;
+	public double armD = 3;
 
 	private int wobbleArmPositionSetpoints = 0;
 	private boolean isLBDown = false;
 	protected HardwareController motor = null;
 	protected PID PIDController = null;
 	protected Telemetry telemetry = null;
-	protected double position = 0;
+	protected double position = 1.85;
 
 	public Arm(Gamepad gp, HardwareController hwC) {
 		super(gp);
@@ -27,6 +27,7 @@ public class Arm extends RobotPart {
 
 	public Arm(Gamepad gp, HardwareController hwC, Telemetry t) {
 		super(gp);
+		telemetry = t;
 		motor = hwC;
 		PIDController = new PID(armP, armI, armD, motor.getPos());
 	}
@@ -55,21 +56,24 @@ public class Arm extends RobotPart {
 
 		switch (wobbleArmPositionSetpoints) {
 			case 1:
-				position = 1.945;
+				position = 1.85;
 				break;
 			case 2:
-				position = 0.112;
+				position = 0.11;
 				break;
 			default:
 
 		}
 
 		PIDController.setSetPoint(position);
-		double power = PIDController.PIDLoop((double)motor.getPos());
-
+		double power = PIDController.PIDLoop((double)motor.getVoltage());
+		power = -power;
 		if (gamepad.a) {
 			power = -0.5;
 		}
+		telemetry.addData("Arm Power: ", power);
+		telemetry.addData("Arm SetPoint: ", position);
+		telemetry.addData("Arm Position: ", motor.getVoltage());
 
 		motor.setSpeed(power);
 	}

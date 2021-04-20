@@ -66,10 +66,8 @@ public class HardwareController {
 
 	public double getPos() {
 		double avrgPos = 0;
-		if (motors.size() > 0) {
-			for (DcMotor m : motors) {
-				avrgPos += m.getCurrentPosition();
-			}
+		for (DcMotor m : motors) {
+			avrgPos += m.getCurrentPosition();
 		}
 		avrgPos /= (double)motors.size();
 		return avrgPos;
