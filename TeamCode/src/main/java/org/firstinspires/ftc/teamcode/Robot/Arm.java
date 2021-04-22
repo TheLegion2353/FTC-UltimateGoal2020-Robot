@@ -22,20 +22,20 @@ public class Arm extends RobotPart {
 	public Arm(Gamepad gp, HardwareController hwC) {
 		super(gp);
 		motor = hwC;
-		PIDController = new PID(armP, armI, armD, motor.getPos());
+		PIDController = new PID(armP, armI, armD, motor.getVoltage());
 	}
 
 	public Arm(Gamepad gp, HardwareController hwC, Telemetry t) {
 		super(gp);
 		telemetry = t;
 		motor = hwC;
-		PIDController = new PID(armP, armI, armD, motor.getPos());
+		PIDController = new PID(armP, armI, armD, motor.getVoltage());
 	}
 
 	@Override
 	protected void autonomousUpdate() {
 		PIDController.setSetPoint(position);
-		double power = PIDController.PIDLoop((double)motor.getPos());
+		double power = PIDController.PIDLoop((double)motor.getVoltage());
 		motor.setSpeed(power);
 	}
 
@@ -80,7 +80,7 @@ public class Arm extends RobotPart {
 
 	public boolean setArmPosition(double pos) {
 		position = pos;
-		return Math.abs(motor.getPos() - pos) < 0.1;
+		return Math.abs(motor.getVoltage() - pos) < 0.1;
 	}
 
 	public double getArmPosition() {

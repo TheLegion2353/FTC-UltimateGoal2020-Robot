@@ -37,6 +37,6 @@ public class Claw extends RobotPart {
 	}
 
 	public void setGrab(int grab) {
-		servo.setPosition(grab * .5);
+		servo.setPosition(grab);
 	}
 }

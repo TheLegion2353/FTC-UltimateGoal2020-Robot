@@ -27,7 +27,7 @@ public class Whacker extends RobotPart {
 	}
 
 	public void setPosition(double p) {
-		whacker.setPosition(p);
+		whacker.setPosition(p * 0.35);
 	}
 
 	public double getPosition() {

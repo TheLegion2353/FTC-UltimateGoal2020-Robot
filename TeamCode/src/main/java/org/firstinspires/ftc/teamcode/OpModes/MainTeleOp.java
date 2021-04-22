@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.Robot.Robot;
 public class MainTeleOp extends OpMode {
 	private SampleMecanumDrive drive = null;
 	private Flywheel flywheel = null;
+	private DcMotor fly = null;
 	private Arm arm = null;
 	private HardwareController intake = null;
 	private Claw wobbleClaw = null;
@@ -32,11 +33,13 @@ public class MainTeleOp extends OpMode {
 	public void init() {
 		drive = new SampleMecanumDrive(hardwareMap);
 		drive.setPoseEstimate(PoseStorage.currentPos);  //change to teleop start position
-		flywheel = new Flywheel(gamepad1, telemetry, hardwareMap.get(DcMotorEx.class, "flywheel"));
-		HardwareController hwC = new HardwareController(DcMotor.RunMode.RUN_WITHOUT_ENCODER, hardwareMap.get(DcMotorEx.class, "wobble/lateral"));
+		fly = hardwareMap.get(DcMotor.class, "flywheel");
+		fly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		//flywheel = new Flywheel(gamepad1, telemetry, fly);
+		HardwareController hwC = new HardwareController(DcMotor.RunMode.RUN_WITHOUT_ENCODER, hardwareMap.get(DcMotor.class, "wobble/lateral"));
 		hwC.addAnalogInput(hardwareMap.get(AnalogInput.class, "wobblePotentiometer"));
 		arm = new Arm(gamepad1, hwC, telemetry);
-		intake = new HardwareController(DcMotor.RunMode.RUN_WITHOUT_ENCODER, hardwareMap.get(DcMotorEx.class, "intake/right"));
+		intake = new HardwareController(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER, hardwareMap.get(DcMotorEx.class, "intake/right"));
 		whacker = new Whacker(gamepad1, hardwareMap.get(Servo.class, "whacker"));
 		wobbleClaw = new Claw(gamepad1, hardwareMap.get(Servo.class, "claw"));
 	}
@@ -51,13 +54,16 @@ public class MainTeleOp extends OpMode {
 				)
 		);
 
+		if (gamepad1.y) {
+			fly.setPower(0.75);
+		} else {
+			fly.setPower(0);
+		}
 		drive.update();
-		flywheel.update();
 		whacker.update();
 		arm.update();
 		wobbleClaw.update();
-
-		telemetry.addData("Position: ", hardwareMap.get(DcMotorEx.class, "flywheel").getCurrentPosition());
+		telemetry.addData("Position: ", fly.getCurrentPosition());
 		intake.setSpeed(gamepad1.right_trigger - gamepad1.left_trigger);
 
 		Pose2d poseEstimate = drive.getPoseEstimate();
